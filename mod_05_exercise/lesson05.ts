@@ -1,7 +1,14 @@
 /* Classes in TypeScript */
-
+interface Vehicle {
+    make: string;
+    color: string;
+    doors: number;
+    accelerate(speed: number): string;
+    brake(): string;
+    turn(direction: 'left' | 'right'): string;
+}
 // By convention classes are declared in PascalCase
-class Car {
+class Car implements Vehicle {
     // Properties - raw data passed to the class object when it's initialized.
     private _make: string 
     private _model: string
@@ -124,3 +131,57 @@ let eCar = new ElectricCar('Electric Car Co.', 'black', 263);
 console.log(eCar.doors);         // returns the default, 2
 spark.charge();                  // returns "Spark Motors is charging"
 console.log(spark.brake());  // returns "Spark Motors is braking with the regenerative braking system"
+
+
+// MOre on interfaces
+/* 
+
+If you were creating a full-stack application with both client and server implementations,
+ you will typically need to define how data will be structured. If the data in question was
+ to store information about a dog, for example, you might create an interface that looks like this:
+
+*/
+
+interface Dog {
+    id?: number;
+    name: string;
+    age: number;
+    description: string;
+}
+
+/*
+This interface could be used in a shared module for both your client and server code, 
+ensuring the data structure is the same on both sides. On the client, you might have
+ code to retrieve the dog from the server API you define, which looks like the following:
+
+*/
+/*
+Here is an example of how a client will get the code from the server. 
+
+
+async loadDog(id: number): Dog {
+    return await (await fetch('demoUrl')).json() as Dog;
+}
+*/
+class DogRecord implements Dog {
+    id: number;
+    name: string;
+    age: number;
+    description: string;
+
+    constructor({name, age, description, id = 0}: Dog) {
+        this.id = id;
+        this.name = name;
+        this.age = age;
+        this.description = description;
+    }
+
+    static load(id: number): DogRecord {
+        // code to load dog from database
+        return dog;
+    }
+
+    save() {
+        // code to save dog to database
+    }
+}
