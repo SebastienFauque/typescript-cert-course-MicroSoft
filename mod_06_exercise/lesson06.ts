@@ -55,7 +55,12 @@ returnNumber2 = returnNumber2 * 100;   // OK
 // returnBoolean = returnBoolean * 100; // Error: Type 'number' not assignable to type 'boolean'
 
 function identity2<T, U> (value: T, message: U) : T {
-    let result: T = value + value;    // Error that will appear at compile time.
+    // Error that will appear at compile time. The generic T
+    // doesn't know the type of value, also the left side of the 
+    // arithmetic operation must be of type 'any' 'number', 'bigint', or an enum
+    // because it doesn't know what value will be passed to it at runtime. 
+    let result: T = value + value;
+     
     console.log(message);
     return result
 }
@@ -65,7 +70,7 @@ function identity2<T, U> (value: T, message: U) : T {
 type ValidTypes = string | number;
 
 function identity3<T extends ValidTypes, U> (value: T, message: U) : T {
-    let result: T = value + value;    // Error
+    let result: T = value + value;    // Error as the type of result isn't an accepted arithemetic operator type.
     console.log(message);
     return result
 }
@@ -78,3 +83,47 @@ let returnBoolean3 = identity<boolean, string>(true, 'Bonjour!'); // Error: Type
 // "Keyof" can be used to constrain a type to the property of another object.
 // In this example the "K extends keyof T" will see that T(pets1) is an object
 // and that K will be the type of the keys found on the object (pets1) 
+function getPets<T, K extends keyof T>(pet: T, key: K) {
+    return pet[key];
+}
+
+let pets1 = { cats: 4, dogs: 3, parrots: 1, fish: 6 };
+let pets2 = { 1: "cats", 2: "dogs", 3: "parrots", 4: "fish" }
+
+console.log(getPets(pets1, "fish")) // Returns 6
+console.log(getPets(pets2, "3")) // Error
+
+/*
+You'll notice that TypeScript still raises an issue with the value + value expression
+ in the identity function. But now you know that only number and string types can be 
+ passed to the function.
+
+You can use the typeof type guard in an if block to check the type of the value 
+parameter before performing an operation, as shown in the following example. TypeScript
+ can determine from the if statement if the operation will work with the values provided
+  within the block.
+*/
+type ValidTypes2 = string | number;
+function identity4<T extends ValidTypes2, U> (value: T, message: U) { // Return type is inferred
+    let result: ValidTypes2 = '';
+    let typeValue: string = typeof value;
+
+    // only allows nubmers and strings. Typeof typeguards will not work with classes.
+    // To typeguard a class, use "instanceof".
+    if (typeof value == 'number') {
+        result = value + value;
+    } else if (typeof value === 'string') {
+        result = value + value;
+    }
+
+    console.log(`The message is ${message} and the function returns a ${typeValue}
+    value of ${result}.`);
+
+    return result
+}
+
+let numberValue = identity4<number, string>(100, "hello");
+let stringValue = identity4<string, string>('100', 'hello');
+
+console.log(numberValue); // returns 200
+console.log(stringValue); // returns 100100
