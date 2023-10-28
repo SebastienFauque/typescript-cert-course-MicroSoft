@@ -51,3 +51,19 @@ class processIdentity3<X, Y> implements ProcessIdentity2<X, Y> {
 let processor2 = new processIdentity3<number, string>(100, 'Hello');
 processor2.process(); // displays 'Hello'
 processor2.value = '100'; // Type check error as we are now trying to make a string fit a number type.
+
+// Define a Generic class
+class processIdentity4<T, U> {
+    private _value: T;
+    private _message: U;
+    constructor(value: T, message: U) {
+        this._value = value;
+        this._message = message;
+    }
+    getIdentity() : T {
+        console.log(this._message);
+        return this._value
+    }
+}
+let processor4 = new processIdentity4<number, string>(100, 'Hello');
+processor4.getIdentity(); // Displays 'Hello'
