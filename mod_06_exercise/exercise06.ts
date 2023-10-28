@@ -34,3 +34,20 @@ interface ProcessIdentity2<T, U> {
     message: U;
     process(): T;
 }
+
+class processIdentity3<X, Y> implements ProcessIdentity2<X, Y> {
+    value: X;
+    message: Y;
+    constructor(val: X, msg: Y) {
+        this.value = val;
+        this.message = msg;
+    }
+    process() : X {
+        console.log(this.message);
+        return this.value
+    }
+}
+
+let processor2 = new processIdentity3<number, string>(100, 'Hello');
+processor2.process(); // displays 'Hello'
+processor2.value = '100'; // Type check error as we are now trying to make a string fit a number type.
